@@ -10,7 +10,31 @@
   <div class="container text-center mt-5">
     <h1 class="display-1">Hello World</h1>
     <p class="lead">Welcome to my Express.js app with Bootstrap!</p>
+
+    <div class="row justify-content-center mt-4">
+      <div class="col-md-4">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Australia Time</h5>
+            <p class="card-text fs-4" id="aus-time"></p>
+            <p class="card-text" id="aus-date"></p>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    function updateAustraliaTime() {
+      const options = { timeZone: 'Australia/Sydney', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
+      const dateOptions = { timeZone: 'Australia/Sydney', weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      const now = new Date();
+      document.getElementById('aus-time').textContent = now.toLocaleTimeString('en-AU', options);
+      document.getElementById('aus-date').textContent = now.toLocaleDateString('en-AU', dateOptions);
+    }
+    updateAustraliaTime();
+    setInterval(updateAustraliaTime, 1000);
+  </script>
 </body>
 </html>
