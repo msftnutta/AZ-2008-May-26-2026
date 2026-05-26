@@ -7,23 +7,90 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
   <style>
+    :root {
+      --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+      --card-bg: rgba(255, 255, 255, 0.95);
+      --card-text: #333;
+      --card-muted: #666;
+      --card-border: rgba(255, 255, 255, 0.2);
+      --time-gradient: linear-gradient(135deg, #667eea, #764ba2);
+      --forecast-bg: #fff;
+      --forecast-border: #f0f0f0;
+      --forecast-text: #333;
+      --forecast-muted: #555;
+      --weather-temp: #555;
+      --weather-desc: #888;
+      --toggle-bg: rgba(255, 255, 255, 0.2);
+      --toggle-hover: rgba(255, 255, 255, 0.35);
+      --toggle-text: #fff;
+      --hero-gradient: linear-gradient(90deg, #fff, #ffd6e7);
+      --hero-subtitle: rgba(255, 255, 255, 0.85);
+      --shadow-color: rgba(0, 0, 0, 0.2);
+    }
+    [data-theme="dark"] {
+      --bg-gradient: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+      --card-bg: rgba(30, 30, 50, 0.9);
+      --card-text: #e8e8f0;
+      --card-muted: #a0a0b0;
+      --card-border: rgba(255, 255, 255, 0.08);
+      --time-gradient: linear-gradient(135deg, #a78bfa, #f472b6);
+      --forecast-bg: #1e1e32;
+      --forecast-border: #2d2d4a;
+      --forecast-text: #e8e8f0;
+      --forecast-muted: #b0b0c0;
+      --weather-temp: #c0c0d0;
+      --weather-desc: #8888a0;
+      --toggle-bg: rgba(255, 255, 255, 0.1);
+      --toggle-hover: rgba(255, 255, 255, 0.2);
+      --toggle-text: #ffd700;
+      --hero-gradient: linear-gradient(90deg, #e0e0ff, #c4b5fd);
+      --hero-subtitle: rgba(255, 255, 255, 0.7);
+      --shadow-color: rgba(0, 0, 0, 0.5);
+    }
     body {
       min-height: 100vh;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+      background: var(--bg-gradient);
       font-family: 'Segoe UI', system-ui, sans-serif;
+      transition: background 0.5s ease;
+    }
+    .theme-toggle {
+      position: fixed;
+      top: 1.5rem;
+      right: 1.5rem;
+      z-index: 9999;
+      background: var(--toggle-bg);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 50px;
+      padding: 0.5rem 1rem;
+      color: var(--toggle-text);
+      font-size: 1.2rem;
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .theme-toggle:hover {
+      background: var(--toggle-hover);
+      transform: scale(1.05);
+    }
+    .theme-toggle .label {
+      font-size: 0.8rem;
+      font-weight: 600;
     }
     .hero-title {
       font-weight: 800;
-      background: linear-gradient(90deg, #fff, #ffd6e7);
+      background: var(--hero-gradient);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
     .hero-subtitle {
-      color: rgba(255, 255, 255, 0.85);
+      color: var(--hero-subtitle);
     }
     .card-modern {
-      border: none;
+      border: 1px solid var(--card-border);
       border-radius: 1rem;
       backdrop-filter: blur(10px);
       background: rgba(255, 255, 255, 0.15);
@@ -32,25 +99,26 @@
     }
     .card-modern:hover {
       transform: translateY(-5px);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 20px 40px var(--shadow-color);
     }
     .card-time {
-      background: rgba(255, 255, 255, 0.95);
-      color: #333;
+      background: var(--card-bg);
+      color: var(--card-text);
     }
     .card-time:hover {
-      background: #fff;
+      background: var(--card-bg);
+      filter: brightness(1.05);
     }
     .time-display {
       font-size: 2.5rem;
       font-weight: 700;
-      background: linear-gradient(135deg, #667eea, #764ba2);
+      background: var(--time-gradient);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
     .date-display {
-      color: #666;
+      color: var(--card-muted);
       font-size: 1.1rem;
     }
     .badge-live {
@@ -84,15 +152,27 @@
     }
     .weather-temp {
       font-size: 0.9rem;
-      color: #555;
+      color: var(--weather-temp);
       font-weight: 600;
     }
     .weather-desc {
       font-size: 0.75rem;
-      color: #888;
+      color: var(--weather-desc);
     }
     .card-time {
       position: relative;
+    }
+    .card-time .card-title {
+      color: var(--card-text) !important;
+    }
+    .card-time .text-muted {
+      color: var(--card-muted) !important;
+    }
+    .card-time .text-dark {
+      color: var(--card-text) !important;
+    }
+    .forecast-popout h6 {
+      color: var(--forecast-text) !important;
     }
     .forecast-popout {
       display: none;
@@ -100,9 +180,9 @@
       top: 100%;
       left: 50%;
       transform: translateX(-50%);
-      background: #fff;
+      background: var(--forecast-bg);
       border-radius: 1rem;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.25);
+      box-shadow: 0 10px 40px var(--shadow-color);
       padding: 1rem;
       z-index: 1000;
       min-width: 280px;
@@ -115,7 +195,7 @@
       left: 50%;
       transform: translateX(-50%);
       border: 8px solid transparent;
-      border-bottom-color: #fff;
+      border-bottom-color: var(--forecast-bg);
     }
     .card-time:hover .forecast-popout {
       display: block;
@@ -125,7 +205,7 @@
       align-items: center;
       justify-content: space-between;
       padding: 0.3rem 0;
-      border-bottom: 1px solid #f0f0f0;
+      border-bottom: 1px solid var(--forecast-border);
       font-size: 0.8rem;
     }
     .forecast-day:last-child {
@@ -134,18 +214,24 @@
     .forecast-day-name {
       width: 60px;
       font-weight: 600;
-      color: #333;
+      color: var(--forecast-text);
     }
     .forecast-day-icon {
       font-size: 1.2rem;
     }
     .forecast-day-temp {
-      color: #555;
+      color: var(--forecast-muted);
       font-size: 0.75rem;
     }
   </style>
 </head>
 <body>
+  <!-- Theme Toggle -->
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+    <i class="bi bi-sun-fill" id="themeIcon"></i>
+    <span class="label" id="themeLabel">Light</span>
+  </button>
+
   <div class="container py-5">
     <!-- Hero Section -->
     <div class="text-center mb-5 pt-4">
@@ -305,6 +391,33 @@
       }
     }
     loadWeather();
+
+    // Theme toggle
+    const themeToggle = document.getElementById('themeToggle');
+    const themeIcon = document.getElementById('themeIcon');
+    const themeLabel = document.getElementById('themeLabel');
+    const html = document.documentElement;
+
+    function setTheme(theme) {
+      html.setAttribute('data-theme', theme);
+      localStorage.setItem('theme', theme);
+      if (theme === 'dark') {
+        themeIcon.className = 'bi bi-moon-stars-fill';
+        themeLabel.textContent = 'Dark';
+      } else {
+        themeIcon.className = 'bi bi-sun-fill';
+        themeLabel.textContent = 'Light';
+      }
+    }
+
+    // Load saved theme or default to light
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    setTheme(savedTheme);
+
+    themeToggle.addEventListener('click', () => {
+      const current = html.getAttribute('data-theme');
+      setTheme(current === 'dark' ? 'light' : 'dark');
+    });
   </script>
 </body>
 </html>
