@@ -3,7 +3,6 @@
 ![Main Workflow](https://github.com/msftnutta/AZ-2008-May-26-2026/actions/workflows/main-workflow-github-action.yml/badge.svg?branch=main)
 ![CI Pipeline](https://github.com/msftnutta/AZ-2008-May-26-2026/actions/workflows/ci.yml/badge.svg?branch=main)
 ![CD Pipeline](https://github.com/msftnutta/AZ-2008-May-26-2026/actions/workflows/cd.yml/badge.svg?branch=main)
-![Coverage](https://msftnutta.github.io/AZ-2008-May-26-2026/coverage/badge.svg)
 
 ## AZ-2008 DevOps Foundation
 
