@@ -16,6 +16,16 @@ jobs:
     uses: ./.github/workflows/ci.yml
     secrets: inherit
 
+  docker:
+    name: Docker Publish
+    needs: ci
+    # Only publish on push to main (not on pull requests)
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    uses: ./.github/workflows/docker-publish.yml
+    permissions:
+      contents: read
+      packages: write
+
   cd:
     name: Continuous Deployment
     needs: ci
