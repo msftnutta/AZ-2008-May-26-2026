@@ -1,0 +1,86 @@
+# CD Pipeline - Continuous Deployment
+# Triggers: Called by main workflow after CI passes
+# Deploys to Azure App Service using Service Principal
+#
+# ============================================================
+# PREREQUISITES - What you need to set up before this works:
+# ============================================================
+#
+# 1. CREATE AN AZURE APP SERVICE:
+#    az webapp create --name <your-app-name> --resource-group <your-rg> --plan <your-plan> --runtime "NODE:20-lts"
+#
+# 2. CREATE A SERVICE PRINCIPAL for GitHub Actions:
+#    az ad sp create-for-rbac --name "github-actions-sp" \
+#      --role contributor \
+#      --scopes /subscriptions/<subscription-id>/resourceGroups/<your-rg> \
+#      --sdk-auth
+#
+#    This outputs a JSON object. Copy the ENTIRE JSON output.
+#
+# 3. ADD GITHUB SECRETS (Settings > Secrets and variables > Actions):
+#    - AZURE_CREDENTIALS    → Paste the full JSON from step 2
+#    - AZURE_WEBAPP_NAME    → Your App Service name (e.g. "my-weather-app")
+#    - AZURE_MAPS_KEY       → Your Azure Maps subscription key
+#
+# 4. CONFIGURE APP SERVICE ENVIRONMENT VARIABLE:
+#    az webapp config appsettings set --name <your-app-name> \
+#      --resource-group <your-rg> \
+#      --settings AZURE_MAPS_KEY=<your-azure-maps-key>
+#
+# ============================================================
+
+name: CD Pipeline
+
+on:
+  workflow_call:
+
+jobs:
+  deploy:
+    name: Deploy to Azure App Service
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: build-artifact
+          path: .
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install production dependencies
+        run: npm ci --production
+
+      # ============================================================
+      # DEPLOYMENT STEPS (commented out for learning purposes)
+      # Uncomment the steps below when ready to deploy to Azure
+      # ============================================================
+
+      # Login to Azure using Service Principal credentials
+      # The AZURE_CREDENTIALS secret should contain the JSON output from:
+      # az ad sp create-for-rbac --name "github-actions-sp" --role contributor --scopes /subscriptions/<sub-id>/resourceGroups/<rg> --sdk-auth
+      #
+      # - name: Login to Azure
+      #   uses: azure/login@v2
+      #   with:
+      #     creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      # Deploy to Azure App Service
+      # Update AZURE_WEBAPP_NAME secret with your actual App Service name
+      #
+      # - name: Deploy to Azure Web App
+      #   uses: azure/webapps-deploy@v3
+      #   with:
+      #     app-name: ${{ secrets.AZURE_WEBAPP_NAME }}
+      #     package: .
+
+      # - name: Azure logout
+      #   run: az logout
+      #   if: always()
+
+      - name: Deployment placeholder
+        run: echo "Deployment steps are commented out. Uncomment when ready to deploy to Azure App Service."
