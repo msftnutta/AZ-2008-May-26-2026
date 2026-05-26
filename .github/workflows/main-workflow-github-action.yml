@@ -1,0 +1,25 @@
+# Main Workflow - Orchestrates CI and CD pipelines
+# Triggers on push to main branch
+# Calls CI first, then CD after CI passes
+
+name: main-workflow-github-action
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  ci:
+    name: Continuous Integration
+    uses: ./.github/workflows/ci.yml
+    secrets: inherit
+
+  cd:
+    name: Continuous Deployment
+    needs: ci
+    # Only deploy on push to main (not on pull requests)
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    uses: ./.github/workflows/cd.yml
+    secrets: inherit
