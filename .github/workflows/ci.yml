@@ -82,7 +82,7 @@ jobs:
           AZURE_MAPS_KEY: ${{ secrets.AZURE_MAPS_KEY }}
 
       - name: Generate coverage badge
-        uses: jaywcjlove/coverage-badges-cli@v2
+        uses: jaywcjlove/coverage-badges-cli@v1
         with:
           source: coverage/coverage-summary.json
           output: coverage/badge.svg
